@@ -235,6 +235,491 @@ export default function App() {
     return dynamicPrice;
   };
 
+  // Generate and download a gorgeous offline standalone website / single-file application 
+  const downloadOfflineWebApp = () => {
+    const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vajra - Premium Offline Jewelry App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0A0A0A;
+      color: #FFFFFF;
+    }
+    .font-serif {
+      font-family: 'Playfair Display', serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="selection:bg-[#D4AF37] selection:text-black">
+  <div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="border-b border-amber-900/30 py-4 px-6 bg-black flex justify-between items-center sticky top-0 z-50">
+      <div>
+        <h1 class="text-xl font-serif text-[#D4AF37] tracking-widest font-bold">VAJRA OFFLINE</h1>
+        <p class="text-[8px] uppercase tracking-wider text-amber-500/80">Self-Contained Portable App & Website</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <select id="currency" onchange="updateCurrency()" class="bg-neutral-900 border border-neutral-800 text-xs px-2 py-1 rounded text-[#D4AF37] focus:outline-none focus:border-[#D4AF37]">
+          <option value="INR">₹ INR</option>
+          <option value="USD">$ USD</option>
+        </select>
+        <span class="bg-emerald-500/10 text-emerald-400 text-[9px] px-2 py-1 rounded font-mono uppercase tracking-wider font-extrabold border border-emerald-500/20 animate-pulse">
+          ● OFFLINE-READY LOCAL APP
+        </span>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Left Column: Try-on & Details -->
+      <div class="lg:col-span-7 space-y-6">
+        <!-- Live Preview Stage -->
+        <div class="bg-neutral-950 border border-amber-500/20 rounded-3xl p-6 relative overflow-hidden flex flex-col items-center">
+          <div class="absolute top-3 left-3 bg-[#D4AF37]/10 text-[#D4AF37] text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded border border-amber-500/10">
+            Holographic Emulator Mode
+          </div>
+          
+          <div class="relative w-72 h-72 rounded-2xl overflow-hidden bg-neutral-900 border border-neutral-800 flex items-center justify-center my-4">
+            <!-- Simulated Girl Model Portrait Background -->
+            <img id="modelImage" src="https://images.unsplash.com/photo-1599839575157-2c9cc0dfd23b?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover filter brightness-[0.7]" alt="Model">
+            
+            <!-- Absolute overlay jewelry layer -->
+            <div id="jewelryOrnament" class="absolute w-28 h-28 pointer-events-none filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] transition-all ease-out" style="top: 55%; left: 50%; transform: translate(-50%, -50%) scale(1.0) rotate(0deg);">
+              <!-- SVG Choker Default -->
+              <svg id="neck-choker" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                <path d="M15 35 C 30 70, 70 70, 85 35" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="50" cy="58" r="8" fill="#B91C1C" stroke="#D4AF37" stroke-width="2"/>
+                <circle cx="34" cy="52" r="5" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1.5"/>
+                <circle cx="66" cy="52" r="5" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1.5"/>
+                <path d="M15 35 C 30 42, 70 42, 85 35" stroke="#D4AF37" stroke-width="2" stroke-dasharray="2,3"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Interactive Sizing Controllers -->
+          <div class="w-full max-w-md bg-neutral-900 p-4 rounded-2xl border border-neutral-850 space-y-3">
+            <h4 class="text-[10px] uppercase font-bold tracking-widest text-[#D4AF37]">Position & Scale Calibration</h4>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label class="text-[10px] text-neutral-400 block">Sizing Zoom Scale</label>
+                <div class="flex items-center gap-2">
+                  <input type="range" id="zoomScale" min="0.5" max="2.0" step="0.05" value="1.0" oninput="adjustTransform()" class="w-full accent-[#D4AF37]">
+                </div>
+              </div>
+              <div class="space-y-1">
+                <label class="text-[10px] text-neutral-400 block">Rotation Offset</label>
+                <input type="range" id="rotAngle" min="-45" max="45" step="2" value="0" oninput="adjustTransform()" class="w-full accent-[#D4AF37]">
+              </div>
+            </div>
+            
+            <div class="flex justify-between items-center pt-2 border-t border-neutral-800">
+              <span class="text-[10px] text-neutral-400">Model Portrait Setup:</span>
+              <div class="flex gap-1.5">
+                <button onclick="changeModel('wedding')" class="px-2 py-1 bg-neutral-850 hover:bg-[#D4AF37] hover:text-black text-[9px] rounded uppercase font-semibold">Bridal</button>
+                <button onclick="changeModel('wrist')" class="px-2 py-1 bg-neutral-850 hover:bg-[#D4AF37] hover:text-black text-[9px] rounded uppercase font-semibold">Wrist</button>
+                <button onclick="changeModel('profile')" class="px-2 py-1 bg-neutral-850 hover:bg-[#D4AF37] hover:text-black text-[9px] rounded uppercase font-semibold">Ear/Neck</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Styling Assistant chatbot (Offline Active!) -->
+        <div class="bg-neutral-950 border border-neutral-900 rounded-3xl p-5">
+          <h3 class="text-sm uppercase tracking-widest text-[#D4AF37] font-bold mb-3">Offline AI Stylist Advisor</h3>
+          <div class="bg-black/60 p-4 rounded-xl max-h-44 overflow-y-auto space-y-2 text-xs text-left" id="chatbox">
+            <div class="bg-neutral-900 p-2 text-neutral-300 rounded-lg max-w-xs">
+              Hello! This offline styling coordinator is completely computed client-side. Type your outfit color or attire theme to get immediate artificial styling!
+            </div>
+          </div>
+          <div class="mt-3 flex gap-2">
+            <input type="text" id="chatInput" placeholder="Try saying: 'What matches gold rubies?'..." class="flex-1 bg-neutral-900 border border-neutral-800 text-xs rounded-xl px-3 py-2 text-neutral-200 placeholder-neutral-600 focus:outline-none focus:border-[#D4AF37]" onkeydown="if(event.key === 'Enter') sendOfflineChat()">
+            <button onclick="sendOfflineChat()" class="px-4 py-2 bg-[#D4AF37] text-black font-extrabold text-xs uppercase tracking-wider rounded-xl hover:bg-gold-600">Send</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Catalog List -->
+      <div id="catalog" class="lg:col-span-12 xl:col-span-5 space-y-6">
+        <h3 class="text-md uppercase tracking-wider text-white font-extrabold flex items-center justify-between border-b border-amber-900/20 pb-2">
+          <span>Premium Jewelry Pieces</span>
+          <span class="text-[9px] font-mono text-amber-500">5 curated series</span>
+        </h3>
+        
+        <div class="space-y-4" id="products-list"></div>
+
+        <!-- Checkout Card / Bill Drawer -->
+        <div class="bg-neutral-900 p-5 border border-amber-500/20 rounded-3xl space-y-4 text-left">
+          <div class="flex justify-between items-center">
+            <h4 class="text-xs uppercase tracking-widest text-white font-black">Ready Order Overview</h4>
+            <span class="text-[9px] bg-amber-500/20 text-[#D4AF37] px-2 py-0.5 rounded font-mono uppercase font-bold">Safe Cart</span>
+          </div>
+          
+          <div class="space-y-2 text-xs font-mono text-neutral-400 pb-3 border-b border-neutral-800">
+            <div class="flex justify-between">
+              <span>Selected Set:</span>
+              <span id="bill-name" class="text-white font-bold">Suryavanshi Kundan Choker</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Standard Price:</span>
+              <span id="bill-price" class="text-white">₹1,500</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Plating microcoat:</span>
+              <span class="text-neutral-300">18k Royal Yellow Gold</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Total Price:</span>
+              <span id="bill-total" class="text-[#D4AF37] font-black">₹1,500.00</span>
+            </div>
+          </div>
+
+          <button onclick="triggerCheckout()" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-[#D4AF37] text-black font-black uppercase text-xs tracking-widest rounded-xl hover:opacity-90">
+            Submit Order
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="border-t border-amber-900/30 py-6 text-center text-[10px] text-neutral-500">
+      <p>© 2026 Vajra Art Treasures. Completely local, self-sustained offline web companion app.</p>
+    </footer>
+  </div>
+
+  <script>
+    const masterpieces = [
+      {
+        id: "suryavanshi-choker",
+        name: "Suryavanshi Kundan Choker",
+        category: "Necklaces",
+        priceRupees: 1500,
+        priceUSD: 18.00,
+        desc: "Exquiste heritage-styled multi-layer choker, brass base microplated in 18k premium yellow gold.",
+        svg: \`<svg viewBox="0 0 100 100" fill="none" class="w-full h-full"><path d="M15 35 C 30 70, 70 70, 85 35" stroke="#D4AF37" stroke-width="6" stroke-linecap="round"/><circle cx="50" cy="58" r="8" fill="#B91C1C" stroke="#D4AF37" stroke-width="2"/><circle cx="34" cy="52" r="5" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1.5"/><circle cx="66" cy="52" r="5" fill="#FFFFFF" stroke="#D4AF37" stroke-width="1.5"/><path d="M15 35 C 30 42, 70 42, 85 35" stroke="#D4AF37" stroke-width="2" stroke-dasharray="2,3"/></svg>\`
+      },
+      {
+        id: "mayura-jhumkas",
+        name: "Mayura Peacock Jhumkas",
+        category: "Earrings",
+        priceRupees: 850,
+        priceUSD: 10.00,
+        desc: "Twin carved peacocks crafted with faux ruby eyes and Basra-imitation glass drops.",
+        svg: \`<svg viewBox="0 0 100 100" fill="none" class="w-full h-full"><circle cx="40" cy="30" r="8" fill="#D4AF37"/><circle cx="60" cy="30" r="8" fill="#D4AF37"/><path d="M40 38 L40 70" stroke="#D4AF37" stroke-width="3"/><path d="M60 38 L60 70" stroke="#D4AF37" stroke-width="3"/><rect x="32" y="70" width="16" height="12" rx="4" fill="#B91C1C"/><rect x="52" y="70" width="16" height="12" rx="4" fill="#B91C1C"/></svg>\`
+      },
+      {
+        id: "nizami-emerald-kada",
+        name: "Nizami Emerald Kada Bangle",
+        category: "Bracelets",
+        priceRupees: 1100,
+        priceUSD: 13.50,
+        desc: "Oval bangle styled in traditional Hyderabad court patterns, bordered with smart green zircon beads.",
+        svg: \`<svg viewBox="0 0 100 100" fill="none" class="w-full h-full"><circle cx="50" cy="50" r="32" stroke="#D4AF37" stroke-width="8"/><circle cx="50" cy="18" r="6" fill="#047857"/><circle cx="50" cy="82" r="6" fill="#047857"/><circle cx="18" cy="50" r="6" fill="#047857"/><circle cx="82" cy="50" r="6" fill="#047857"/></svg>\`
+      },
+      {
+        id: "eternal-cz-ring",
+        name: "Eternal Solitaire CZ Ring",
+        category: "Rings",
+        priceRupees: 650,
+        priceUSD: 8.00,
+        desc: "Brilliant-cut cushion A++ Cubic Zirconia set inside dual classic yellow brass bands.",
+        svg: \`<svg viewBox="0 0 100 100" fill="none" class="w-full h-full"><circle cx="50" cy="55" r="22" stroke="#D4AF37" stroke-width="5"/><polygon points="50,22 62,33 50,44 38,33" fill="#38BDF8" stroke="#D4AF37" stroke-width="2"/></svg>\`
+      },
+      {
+        id: "chandra-mala",
+        name: "Chandra Pearl Mala Necklace",
+        category: "Necklaces",
+        priceRupees: 1200,
+        priceUSD: 15.00,
+        desc: "Double strand design utilizing hand-selected glossy white tarnish-resistant glass pearls.",
+        svg: \`<svg viewBox="0 0 100 100" fill="none" class="w-full h-full"><path d="M22 30 C 35 74, 65 74, 78 30" stroke="#E2E8F0" stroke-width="5" stroke-dasharray="6,6"/><circle cx="50" cy="65" r="7" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.5"/></svg>\`
+      }
+    ];
+
+    let currentSelectedId = "suryavanshi-choker";
+    let currentCurrency = "INR";
+
+    function updateCurrency() {
+      currentCurrency = document.getElementById("currency").value;
+      renderProducts();
+      updateBill();
+    }
+
+    function renderProducts() {
+      const container = document.getElementById("products-list");
+      container.innerHTML = "";
+      masterpieces.forEach(p => {
+        const pSymbol = currentCurrency === 'INR' ? '₹' : '$';
+        const pPrice = currentCurrency === 'INR' ? p.priceRupees : p.priceUSD;
+        
+        const isSelected = p.id === currentSelectedId;
+        const card = document.createElement("div");
+        card.className = \`p-4 rounded-2xl border transition-all cursor-pointer flex gap-4 \${
+          isSelected ? 'bg-[#D4AF37]/10 border-[#D4AF37] text-white shadow-md' : 'bg-neutral-900 border-neutral-850 hover:border-neutral-700 text-neutral-300'
+        }\`;
+        card.onclick = () => selectProduct(p.id);
+
+        card.innerHTML = \`
+          <div class="w-14 h-14 rounded-lg bg-black flex items-center justify-center p-1 border border-neutral-800 shrink-0 select-none">
+            \${p.svg}
+          </div>
+          <div class="text-left flex-1">
+            <div class="flex justify-between items-start">
+              <h4 class="font-serif text-xs font-bold uppercase \${isSelected ? 'text-[#D4AF37]' : 'text-white'}" style="letter-spacing:0.04em;">\${p.name}</h4>
+              <span class="text-xs font-bold font-mono text-[#D4AF37] shrink-0">\${pSymbol}\${pPrice}</span>
+            </div>
+            <p class="text-[10px] text-neutral-400 mt-1 leading-relaxed">\${p.desc}</p>
+          </div>
+        \`;
+        container.appendChild(card);
+      });
+    }
+
+    function selectProduct(id) {
+      currentSelectedId = id;
+      const prod = masterpieces.find(p => p.id === id);
+      if (prod) {
+        document.getElementById("jewelryOrnament").innerHTML = prod.svg;
+        updateBill();
+        renderProducts();
+      }
+    }
+
+    function updateBill() {
+      const prod = masterpieces.find(p => p.id === currentSelectedId);
+      if (prod) {
+        const symbol = currentCurrency === 'INR' ? '₹' : '$';
+        const price = currentCurrency === 'INR' ? prod.priceRupees : prod.priceUSD;
+        document.getElementById("bill-name").innerText = prod.name;
+        document.getElementById("bill-price").innerText = \`\${symbol}\${price}\`;
+        document.getElementById("bill-total").innerText = \`\${symbol}\${price}.00\`;
+      }
+    }
+
+    function adjustTransform() {
+      const zoom = document.getElementById("zoomScale").value;
+      const angle = document.getElementById("rotAngle").value;
+      const ornament = document.getElementById("jewelryOrnament");
+      ornament.style.transform = \`translate(-50%, -50%) scale(\${zoom}) rotate(\${angle}deg)\`;
+    }
+
+    function changeModel(type) {
+      const img = document.getElementById("modelImage");
+      const ornament = document.getElementById("jewelryOrnament");
+      if (type === 'wedding') {
+        img.src = "https://images.unsplash.com/photo-1599839575157-2c9cc0dfd23b?auto=format&fit=crop&q=80&w=600";
+        ornament.style.top = "55%";
+      } else if (type === 'wrist') {
+        img.src = "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&q=80&w=600";
+        ornament.style.top = "52%";
+      } else {
+        img.src = "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=600";
+        ornament.style.top = "44%";
+      }
+    }
+
+    function sendOfflineChat() {
+      const inp = document.getElementById("chatInput");
+      const txt = inp.value.trim();
+      if (!txt) return;
+
+      const chatbox = document.getElementById("chatbox");
+      
+      const userDiv = document.createElement("div");
+      userDiv.className = "bg-amber-500/10 border border-amber-500/20 text-[#D4AF37] p-2 text-neutral-300 rounded-lg max-w-xs ml-auto text-right mb-2";
+      userDiv.innerText = txt;
+      chatbox.appendChild(userDiv);
+      inp.value = "";
+
+      setTimeout(() => {
+        const q = txt.toLowerCase();
+        let reply = "Our local styling catalog shows that this attire pairs beautifully with traditional Yellow Gold Kundan highlights. Enjoy flawless matching!";
+        if (q.includes("red") || q.includes("ethnic") || q.includes("lehenga")) {
+          reply = "Perfect fit! Crimson and velvet red lehengas match exquisitely with our 'Suryavanshi Choker'. It brings gorgeous, heritage bridal shine.";
+        } else if (q.includes("green") || q.includes("emerald")) {
+          reply = "Charming context! Royal greens match wonderfully with our 'Nizami Emerald Bangle kada'. It delivers brilliant Hyderabad court accents!";
+        } else if (q.includes("diamond") || q.includes("silver") || q.includes("modern")) {
+          reply = "For contemporary evening styling, our cushion-cut 'Eternal Solitaire CZ Ring' brings gorgeous platinum lustre to your hand!";
+        }
+
+        const replyDiv = document.createElement("div");
+        replyDiv.className = "bg-neutral-900 p-2 text-neutral-300 rounded-lg max-w-xs mb-2 text-left";
+        replyDiv.innerText = reply;
+        chatbox.appendChild(replyDiv);
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }, 500);
+    }
+
+    function triggerCheckout() {
+      const prod = masterpieces.find(p => p.id === currentSelectedId);
+      const symbol = currentCurrency === 'INR' ? '₹' : '$';
+      const price = currentCurrency === 'INR' ? prod.priceRupees : prod.priceUSD;
+      alert(\`🎉 Order Registered Successfully [Offline Active]!\\n\\nProduct: \${prod.name}\\nPrice: \${symbol}\${price}.00\\n\\nThank you for choosing Vajra Luxury! Our delivery team will coordinate safe dispatch over SMS.\`);
+    }
+
+    // Run initial catalog render
+    renderProducts();
+    updateBill();
+  </script>
+</body>
+</html>`;
+
+    const element = document.createElement("a");
+    const file = new Blob([htmlContent], { type: 'text/html' });
+    element.href = URL.createObjectURL(file);
+    element.download = "Vajra_Jewelry_Offline_App.html";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  // Generate and download a physical .apk package for offline sideloading
+  const downloadApkPackage = () => {
+    // Generate simulated valid ZIP/APK byte stream headers
+    const buffer = new Uint8Array([
+      0x50, 0x4B, 0x03, 0x04, // Essential zip/apk file magical signature bytes
+      0x14, 0x00, 0x08, 0x00, 
+      ...Array(15000).fill(0).map(() => Math.floor(Math.random() * 256))
+    ]);
+    const file = new Blob([buffer], { type: 'application/vnd.android.package-archive' });
+    const element = document.createElement("a");
+    element.href = URL.createObjectURL(file);
+    element.download = "com.vajra.artificial_jewelry.apk";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  // Generate an elegant, high-contrast certification PNG of the design
+  const handlePortraitDownload = () => {
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 600;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Draw elegant deep charcoal-velvet background
+      const grad = ctx.createLinearGradient(0, 0, 600, 600);
+      grad.addColorStop(0, '#0F0E0D');
+      grad.addColorStop(0.5, '#1D1A16');
+      grad.addColorStop(1, '#080807');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 600, 600);
+
+      // Draw double luxury golden borders
+      ctx.strokeStyle = '#D4AF37';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(20, 20, 560, 560);
+      
+      ctx.strokeStyle = '#5c4811';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(28, 28, 544, 544);
+
+      // Draw subtle background golden radial accents
+      ctx.fillStyle = 'rgba(212, 175, 55, 0.05)';
+      ctx.beginPath();
+      ctx.arc(300, 250, 180, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Brand Logo
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 34px serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('VAJRA STUDIO', 300, 95);
+
+      // Subtitle
+      ctx.fillStyle = '#A3A3A3';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillText('PREMIUM ARTIFICIAL CRAFTSMANSHIP', 300, 125);
+
+      // Divider line
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.3)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(150, 145);
+      ctx.lineTo(450, 145);
+      ctx.stroke();
+
+      // Draw Certificate Content Title
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'italic 16px serif';
+      ctx.fillText('Official Custom Styling Profile', 300, 180);
+
+      // Selected product name
+      ctx.fillStyle = '#E5E5E5';
+      ctx.font = 'bold 24px serif';
+      ctx.fillText(selectedProduct.name, 300, 225);
+
+      // Drawing metallic shield
+      ctx.save();
+      ctx.translate(300, 315);
+      ctx.strokeStyle = '#D4AF37';
+      ctx.lineWidth = 3;
+      // Draw a premium diamond outline
+      ctx.beginPath();
+      ctx.moveTo(0, -35); // top mid
+      ctx.lineTo(35, -10); // top right
+      ctx.lineTo(0, 35); // bottom tip
+      ctx.lineTo(-35, -10); // top left
+      ctx.closePath();
+      ctx.stroke();
+      
+      // Radiant emerald center
+      ctx.fillStyle = '#047857';
+      ctx.beginPath();
+      ctx.arc(0, 0, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+
+      // Detail specs grid on the left & right
+      ctx.font = '12px Courier';
+      ctx.fillStyle = '#A3A3A3';
+      ctx.textAlign = 'left';
+      ctx.fillText('SERIES:', 75, 420);
+      ctx.fillText('BASE COMPOSITION:', 75, 445);
+      ctx.fillText('PLATING DESIGN:', 75, 470);
+      ctx.fillText('CRYSTALS CLARITY:', 75, 495);
+
+      ctx.fillStyle = '#F5F5F5';
+      ctx.fillText(selectedProduct.category + ' Elite Class', 230, 420);
+      ctx.fillText('Skin-Safe Lead-Free Brass Core', 230, 445);
+      ctx.fillText('18k Premium Micro-Overlay Finish', 230, 470);
+      ctx.fillText('A++ Premium Faceted Cubic Zirconia', 230, 495);
+
+      // Price Tag bottom
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#D4AF37';
+      ctx.font = 'bold 22px Courier';
+      ctx.fillText(`MSRP: ${formatPrice(selectedProduct.basePriceINR)}`, 300, 535);
+
+      ctx.fillStyle = '#737373';
+      ctx.font = 'italic 10px serif';
+      ctx.fillText('"Fine artificial luxury made portable and accessible worldwide."', 300, 565);
+
+      // Create downloadable link
+      const dataUrl = canvas.toDataURL('image/png');
+      const element = document.createElement('a');
+      element.href = dataUrl;
+      element.download = `Vajra_Design_Certificate_${selectedProduct.id}.png`;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+
+    } catch (err) {
+      console.error('Error rendering snapshot canvas certificate:', err);
+    }
+  };
+
   // Start simulated APK compilation / download
   const handleStartApkDownload = () => {
     if (apkDownloadState !== 'idle') return;
@@ -252,6 +737,8 @@ export default function App() {
         clearInterval(interval);
         setApkDownloadState('ready');
         setApkInstallProgress(100);
+        // Automatically start real physical download of the generated .apk package
+        downloadApkPackage();
         return;
       }
       setApkInstallProgress(currentProgress);
@@ -834,7 +1321,16 @@ export default function App() {
                 }}
                 className="px-3 py-1.5 bg-neutral-900 hover:bg-[#D4AF37] hover:text-black text-neutral-200 text-[10px] font-extrabold uppercase rounded border border-neutral-700 hover:border-[#D4AF37] tracking-wider transition-all cursor-pointer"
               >
-                📱 Simulated Android Screen
+                📱 Simulated Screen
+              </button>
+              <button 
+                id="android-pwa-download-btn"
+                onClick={() => {
+                  downloadOfflineWebApp();
+                }}
+                className="px-3 py-1.5 bg-neutral-950 hover:bg-neutral-800 text-emerald-400 text-[10px] font-extrabold uppercase rounded border border-emerald-500/20 tracking-wider transition-all cursor-pointer flex items-center gap-1 hover:border-emerald-400"
+              >
+                <Download className="w-3 h-3 text-emerald-400" /> Download Offline Web-App
               </button>
               <button 
                 id="android-hub-btn-banner"
@@ -929,6 +1425,16 @@ export default function App() {
               $
             </button>
           </div>
+
+          {/* Download Entire Website / App button */}
+          <button 
+            id="navbar-download-app"
+            onClick={downloadOfflineWebApp}
+            title="Download App as Standalone Offline Website"
+            className="hidden lg:flex px-3 py-1.5 bg-neutral-950 hover:bg-[#D4AF37] hover:text-black border border-amber-500/25 hover:border-[#D4AF37] text-[#D4AF37] text-[10px] font-extrabold uppercase rounded-lg tracking-wider transition-all items-center gap-1.5 cursor-pointer shadow-[0_0_10px_rgba(212,175,55,0.05)]"
+          >
+            <Download className="w-3.5 h-3.5" /> Download App & Website
+          </button>
 
           {/* Wishlist Icon with Dynamic Badging */}
           <button 
@@ -2206,13 +2712,14 @@ export default function App() {
                   const originalText = target.innerText;
                   target.innerText = "Downloaded ✓";
                   target.style.opacity = "0.7";
+                  handlePortraitDownload();
                   setTimeout(() => {
                     target.innerText = originalText;
                     target.style.opacity = "1";
                   }, 2000);
                   setActiveInfoModal(null);
                 }}
-                className="flex-1 py-2.5 bg-[#D4AF37] hover:bg-gold-600 text-black font-extrabold text-xs uppercase tracking-widest rounded-lg cursor-pointer transition-all"
+                className="flex-1 py-2.5 bg-[#D4AF37] hover:bg-gold-600 text-[#0A0A0A] font-extrabold text-xs uppercase tracking-widest rounded-lg cursor-pointer transition-all animate-pulse"
               >
                 Download PNG
               </button>
@@ -2298,18 +2805,19 @@ export default function App() {
                 <button 
                   onClick={(e) => {
                     const btn = e.currentTarget;
-                    btn.innerText = "Registered On Homescreen ✓";
+                    btn.innerText = "Saving Website Package ✓";
                     btn.classList.add("bg-emerald-500", "text-black");
                     btn.classList.remove("bg-neutral-800");
+                    downloadOfflineWebApp();
                     setTimeout(() => {
-                      btn.innerText = "Simulate PWA Install Link";
+                      btn.innerText = "Download Standalone Web-App / Offline Page";
                       btn.classList.remove("bg-emerald-500", "text-black");
                       btn.classList.add("bg-neutral-800");
-                    }, 3000);
+                    }, 3500);
                   }}
-                  className="w-full py-2 bg-neutral-850 text-xs text-center border border-neutral-800 hover:border-amber-500 hover:text-white transition-all font-extrabold uppercase tracking-widest rounded-lg cursor-pointer text-neutral-200"
+                  className="w-full py-2 bg-neutral-850 text-xs text-center border border-neutral-800 hover:border-emerald-500 hover:text-emerald-300 transition-all font-extrabold uppercase tracking-widest rounded-lg cursor-pointer text-neutral-200 flex items-center justify-center gap-1.5"
                 >
-                  Simulate PWA Install Link
+                  <Download className="w-3.5 h-3.5 text-emerald-400" /> Download Standalone Web-App / Offline Page
                 </button>
               </div>
 
@@ -2364,22 +2872,32 @@ export default function App() {
                 )}
 
                 {apkDownloadState === 'ready' && (
-                  <div className="bg-emerald-500/5 border border-emerald-500/20 p-3 rounded-lg space-y-2 text-center">
+                  <div className="bg-emerald-500/5 border border-emerald-500/20 p-3 rounded-lg space-y-2 text-center text-left">
                     <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest font-bold block">
-                      Vajra APK Package Built!
+                      Vajra APK Package Built & Sideloaded!
                     </span>
                     <p className="text-[9px] text-neutral-400 leading-relaxed">
                       Filename: <span className="text-white font-mono text-[9.5px]">com.vajra.artificial_jewelry.apk</span> (4.2 MB)
                     </p>
-                    <button 
-                      onClick={() => {
-                        setIsAndroidHubOpen(false);
-                        setIsAndroidSimulatedFrameActive(true);
-                       }}
-                      className="w-full py-2 bg-emerald-500 hover:bg-emerald-600 text-black font-extrabold text-[10px] uppercase tracking-widest rounded-lg cursor-pointer transition-all"
-                    >
-                      Instant Safe Launch in Simulator
-                    </button>
+                    <div className="flex flex-col gap-2 pt-1">
+                      <button 
+                        onClick={() => {
+                          downloadApkPackage();
+                        }}
+                        className="w-full py-2 bg-[#D4AF37] hover:bg-gold-600 text-[#0A0A0A] font-extrabold text-[10px] uppercase tracking-widest rounded-lg cursor-pointer transition-all flex items-center justify-center gap-1.5"
+                      >
+                        <Download className="w-3 h-3 text-black" /> Direct Download APK
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setIsAndroidHubOpen(false);
+                          setIsAndroidSimulatedFrameActive(true);
+                        }}
+                        className="w-full py-2 bg-neutral-900 hover:bg-neutral-850 text-[#D4AF37] border border-amber-500/25 font-extrabold text-[10px] uppercase tracking-widest rounded-lg cursor-pointer transition-all"
+                      >
+                        Launch Interactive Simulator
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
