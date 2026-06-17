@@ -1,0 +1,6 @@
+{
+  "name": "Vajra - AI Luxury Jewelry",
+  "description": "Vajra presents exquisite gold and diamond jewelry using AI personalization, dynamic customisation, and virtual camera try-on.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
